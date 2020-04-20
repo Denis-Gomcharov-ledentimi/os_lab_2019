@@ -1,0 +1,7 @@
+gcc -c main.c -o main.o
+gcc -c revert_string.c -o revert_string.o
+ar rsc librevert_string_st.a revert_string.o
+gcc main.o revert_string.o -L. -lrevert_string_st -o main_st
+gcc -c -fPIC revert_string.c -o revert_string_d.o
+gcc -shared revert_string_d.o -o lib_revert_string_din.so
+gcc main.o revert_string.o -L. -l_revert_string_din -o main_d
