@@ -12,24 +12,59 @@
 
 #include <getopt.h>
 
+#include <sys/stat.h>
+#include <signal.h>
+#include <fcntl.h>
+#include <errno.h>
+
 #include "find_min_max.h"
 #include "utils.h"
+
+int pnum = -1;
+int active_child_processes = 0;
+pid_t *child_pid;
+
+static void sig_alarm(int sigg)
+{
+    printf("Timeout exceeded. . .\n");
+    for(int i = 0; i < pnum; ++i)
+    {
+        kill(child_pid[i], SIGKILL);
+    }
+    while (active_child_processes >= 0) {
+        // your code here
+        int wpid = waitpid(-1, NULL, WNOHANG);
+        printf("%d\n", active_child_processes);
+        if(wpid == -1)
+        {
+            if(errno == ECHILD) break;
+        }
+        else
+        {
+            active_child_processes -= 1;
+        }
+    }
+    printf("Exit program\n");
+    
+    exit(0);
+}
 
 int main(int argc, char **argv) {
   int seed = -1;
   int array_size = -1;
-  int pnum = -1;
+  int timeout = 0;
   bool with_files = false;
 
 	while (true) {
 		//int current_optind = optind ? optind : 1;
 
-        const char* short_options = "s:a:p:f";
+        const char* short_options = "s:a:p:t:f";
         
 		static struct option options[] = {{"seed", required_argument, 0, 's'},
 										{"array_size", required_argument, 0, 'a'},
 										{"pnum", required_argument, 0, 'p'},
 										{"by_files", no_argument, 0, 'f'},
+										{"timeout", required_argument, 0, 't'},
 										{0, 0, 0, 0}};
 
 		int option_index = 0;
@@ -70,8 +105,15 @@ int main(int argc, char **argv) {
                     case 3:
                         with_files = true;
                         break;
+		    case 4:
+    				    timeout = atoi(optarg);
+    				    if(timeout <= 0){
+    				        printf("timeout is a positive number\n");
+    						return 1;
+    				    }
+    					break;
 
-				    defalut:
+	 	    defalut:
 					    printf("Index %d is out of options\n", option_index);
 				}
 				break;
@@ -106,6 +148,14 @@ int main(int argc, char **argv) {
 						return 1;
 					}
 					break;
+			case 't':
+					timeout = atoi(optarg);
+					//printf("%d",timeout);
+				    if(timeout <= 0){
+				        printf("timeout is a positive number\n");
+						return 1;
+				    }
+					break;
 				
 
 			case '?':
@@ -137,7 +187,7 @@ int main(int argc, char **argv) {
 	}
 	
 	
-	int active_child_processes = 0;
+
 	
 
 	if (pnum > array_size){
@@ -162,6 +212,21 @@ int main(int argc, char **argv) {
 			pipe( file_desc[i][1] );
 		}
 	}
+
+	if(timeout != 0	){
+	    
+	    printf("\nTimeout is %d second\n", timeout);
+	    printf("Sleep is %d second\n\n", timeout + 1);
+	    
+    	if(signal(SIGALRM, sig_alarm))
+        {
+          printf("Cannot catch SIGALARM\n");
+        }
+        
+        alarm(timeout);        
+    }
+
+	child_pid = malloc(pnum*sizeof(pid_t));
 	
 	struct timeval start_time;
 	gettimeofday(&start_time, NULL);
@@ -169,11 +234,11 @@ int main(int argc, char **argv) {
 	
   
 	for (int i = 0; i < pnum; i++) {
-		pid_t child_pid = fork();
+		child_pid[i] = fork();
 		if (child_pid >= 0) {
-		// successful fork
+
 		active_child_processes += 1;
-		if (child_pid == 0) {
+		if (child_pid[i]  == 0) {
 			// child process
 
 			// parallel somehow
