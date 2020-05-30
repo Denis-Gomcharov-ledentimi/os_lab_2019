@@ -24,4 +24,4 @@ proc_mem : process_memory.c
 	$(CC) -o proc_mem process_memory.c $(CFLAGS)
 	
 psum : parallel_sum.c utils.o
-	$(CC) -o psum utils.o parallel_sum.c -g -lpthread $(CFLAGS)
+	$(CC) -o psum utils.o parallel_sum.c summ.c -g -lpthread $(CFLAGS)

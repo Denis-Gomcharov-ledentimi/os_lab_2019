@@ -18,32 +18,22 @@
 
 #include "utils.h"
 
+#include "summ.h"
+
 #define ERROR_CREATE_THREAD -11
 #define ERROR_JOIN_THREAD   -12
 #define SUCCESS        0
 
 
-struct SumArgs {
-	
-	int *array;
-	int begin;
-	int end;
-};
 
-
-void* ThreadSum(void *args) {
-	
-	struct SumArgs *sum_args = (struct SumArgs *)args;
-	size_t sum = 0;
-	
-	// TODO: your code here 
-	for(int i = sum_args->begin; i < sum_args->end; ++i)
-	{
-		sum += (sum_args->array)[i];
-	}
-	
-	return (void *)sum;
+void *ThreadSum(void *args) {
+  struct SumArgs *sum_args = (struct SumArgs *)args;
+  return (void *)(size_t)Sum(sum_args);
 }
+
+
+
+
 
 
 int main(int argc, char **argv) {
