@@ -49,7 +49,7 @@ static void sig_alarm(int sigg)
     exit(0);
 }
 
-int main(int argc, char **argv) {
+  int main(int argc, char **argv) {
   int seed = -1;
   int array_size = -1;
   int timeout = 0;
@@ -58,14 +58,14 @@ int main(int argc, char **argv) {
 	while (true) {
 		//int current_optind = optind ? optind : 1;
 
-        const char* short_options = "s:a:p:t:f";
+        	const char* short_options = "s:a:p:t:f";
         
 		static struct option options[] = {{"seed", required_argument, 0, 's'},
-										{"array_size", required_argument, 0, 'a'},
-										{"pnum", required_argument, 0, 'p'},
-										{"by_files", no_argument, 0, 'f'},
-										{"timeout", required_argument, 0, 't'},
-										{0, 0, 0, 0}};
+						  {"array_size", required_argument, 0, 'a'},
+						  {"pnum", required_argument, 0, 'p'},
+						  {"by_files", no_argument, 0, 'f'},
+						  {"timeout", required_argument, 0, 't'},
+						  {0, 0, 0, 0}};
 
 		int option_index = 0;
 		int c = getopt_long(argc, argv, short_options, options, &option_index);
@@ -106,11 +106,11 @@ int main(int argc, char **argv) {
                         with_files = true;
                         break;
 		    case 4:
-    				    timeout = atoi(optarg);
-    				    if(timeout <= 0){
-    				        printf("timeout is a positive number\n");
-    						return 1;
-    				    }
+    			timeout = atoi(optarg);
+    			if(timeout <= 0){
+    		        printf("timeout is a positive number\n");
+    			return 1;
+    			}
     					break;
 
 	 	    defalut:
@@ -172,8 +172,7 @@ int main(int argc, char **argv) {
 	}
 
 	if (seed == -1 || array_size == -1 || pnum == -1) {
-		printf("Usage: %s --seed \"num\" --array_size \"num\" --pnum \"num\" \n",
-			argv[0]);
+		printf("Usage: %s --seed \"num\" --array_size \"num\" --pnum \"num\" \n", argv[0]);
 		return 1;
 	}
     
@@ -186,8 +185,6 @@ int main(int argc, char **argv) {
 	    
 	}
 	
-	
-
 	
 
 	if (pnum > array_size){
@@ -247,7 +244,7 @@ int main(int argc, char **argv) {
 		
 			int end = (i + 1) * array_size / pnum;
 			end = end > array_size ? array_size : end;
-		 printf("%d %d \n",begin,end);
+			printf("%d %d \n",begin,end);
 			struct MinMax min_max = GetMinMax(array, begin, end);
 
 
@@ -267,8 +264,8 @@ int main(int argc, char **argv) {
 				
 			} else {
 			    
-			    close(file_desc[i][0][0]);
-			    close(file_desc[i][1][0]);
+				close(file_desc[i][0][0]);
+				close(file_desc[i][1][0]);
 			    
 				write(file_desc[i][0][1], &min_max.min, sizeof(int));
 				write(file_desc[i][1][1], &min_max.max, sizeof(int));
@@ -277,8 +274,8 @@ int main(int argc, char **argv) {
 		}
 
 		} else {
-		printf("Fork failed!\n");
-		return 1;
+			printf("Fork failed!\n");
+			return 1;
 		}
 	}
 
@@ -324,7 +321,7 @@ int main(int argc, char **argv) {
 		} else {
 		// read from pipes
 		
-		    close(file_desc[i][0][1]);
+			close(file_desc[i][0][1]);
 			close(file_desc[i][1][1]);
 			    
 			read(file_desc[i][0][0], &min, sizeof(int));
@@ -335,6 +332,7 @@ int main(int argc, char **argv) {
 		if (min < min_max.min) min_max.min = min;
 		if (max > min_max.max) min_max.max = max;
 	}
+	sleep(50);
 
 	struct timeval finish_time;
 	gettimeofday(&finish_time, NULL);

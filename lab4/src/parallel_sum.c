@@ -53,18 +53,18 @@ int main(int argc, char **argv) {
 	while (true) {
     //int current_optind = optind ? optind : 1;
 
-    const char* short_options = "s:t:a:p";
+    	const char* short_options = "s:t:a:p";
     
-    static struct option options[] = {{"seed", required_argument, 0, 's'},
+    	static struct option options[] = {{"seed", required_argument, 0, 's'},
                                       {"threads_num", required_argument, 0, 't'},
                                       {"array_size", required_argument, 0, 'a'},
 				      {"print_array", no_argument, 0, 'p'},
                                       {0, 0, 0, 0}};
 
-    int option_index = 0;
-    int c = getopt_long(argc, argv, short_options, options, &option_index);
+    	int option_index = 0;
+    	int c = getopt_long(argc, argv, short_options, options, &option_index);
 
-    if (c == -1) break;
+    	if (c == -1) break;
 		switch (c) {
 		  case 0:
 			switch (option_index) {
@@ -181,7 +181,7 @@ int main(int argc, char **argv) {
 		
 		for(int i = 0; i < array_size; ++i)
 		{
-			printf("%d ", array[i]);
+			printf("%d\n", array[i]);
 		}
 		printf("\n");
 	}
