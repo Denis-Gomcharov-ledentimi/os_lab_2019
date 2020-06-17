@@ -61,7 +61,7 @@ struct Server* ReadServers(char* servers, int* servers_num){
 int main(int argc, char **argv) {
     ull k = -1;
     ull mod = -1;
-    char servers[255] = {'\0'}; // TODO: explain why 255
+    char servers[255] = {'\0'}; 
 
     while (true) {
         int current_optind = optind ? optind : 1;
